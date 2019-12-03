@@ -3,7 +3,6 @@ var app = express();
 
 const url = require('url');
 var rp = require('request-promise');
-var jwt = require('jsonwebtoken');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser());
