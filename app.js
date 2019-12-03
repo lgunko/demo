@@ -13,10 +13,13 @@ const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/P
 const ClientId = "T000003";
 const ClientSecret = "2913671Oks";
 
+app.get('/', function (req, res) {
+  res.send({
+    "Output": "req.query.code;"
+  });
+});
 
 app.get('/callbackGetTokenByCode', async function (req, res) {
-
-
 
   let code = req.query.code;
 
