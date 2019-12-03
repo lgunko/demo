@@ -20,6 +20,8 @@ app.get('/callbackGetTokenByCode', async function (req, res) {
 
   let code = req.query.code;
 
+  console.log(code)
+
   let options = {
     method: 'POST',
     uri: YcloudTokenPostUrl,
@@ -36,45 +38,23 @@ app.get('/callbackGetTokenByCode', async function (req, res) {
     json: true,
   }
 
+  console.log(options)
+
   try {
     let result = await rp(options);
+    console.log(result)
     var token = result.id_token
+    console.log(token)
     let urlToRedirect = new url.URL("https://master.dfrd6929zuy83.amplifyapp.com");
     urlToRedirect.searchParams.append('id_token', token);
+    console.log(urlToRedirect.toString())
     res.redirect(urlToRedirect.toString())
   }
   catch (err) {
-    res.status(500).send(err);
-  }
-
-
-  const params = new url.URLSearchParams();
-  params.append('grant_type', "authorization_code");
-  params.append('code', req.query.code);
-  params.append('redirect_uri', myUrl);
-  try {
-    let response = await fetch('https://leonid.auth.eu-central-1.amazoncognito.com/oauth2/token', {
-      method: 'POST',
-      body: params,
-      headers: {
-        'Authorization': 'Basic ' + new Buffer("33jclv5ijp65msi3befivvsufv" + ':' + "hb48c2gf3134adbrhsv49k9a3vsc6bc4u3fvrqh04mtehdopl3a").toString('base64'),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-    })
-    let tokens = await response.json();
-    if (tokens.id_token && tokens.access_token && tokens.refresh_token) {
-      let urlToRedirect = new url.URL(req.query.state);
-      urlToRedirect.searchParams.append('id_token', tokens.id_token);
-      res.redirect(urlToRedirect.toString())
-    }
-    else {
-      res.status(403).send()
-    }
-  }
-  catch (err) {
     console.log(err)
-    res.status(403).send()
+    res.status(403).send(err);
   }
+
 });
 
 
