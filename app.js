@@ -13,6 +13,29 @@ const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/P
 const ClientId = "T000003";
 const ClientSecret = "2913671Oks";
 
+
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
+
+//CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Org, from, to');
+
+  if ('OPTIONS' === req.method) {
+    res.send(200);
+  }
+  else {
+    next();
+  }
+});
+//CORS
+
+
 app.get('/', function (req, res) {
   res.send({
     "Output": "req.query.code;"
