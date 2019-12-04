@@ -53,6 +53,17 @@ app.get('/allServices', function (req, res) {
 
 })
 
+app.get('/allGroups', function (req, res) {
+
+  res.send([
+    "ServiceEngineer",
+    "ServiceConsultant",
+    "Manager",
+    "MarketingConsultant",
+  ]);
+
+})
+
 app.get('/groupsForService', function (req, res) {
   console.log(req.query.service)
   let service = decodeURIComponent(req.query.service)
