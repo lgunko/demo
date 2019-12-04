@@ -31,7 +31,8 @@ app.get('/allServices', function (req, res) {
 })
 
 app.get('/groupsForService', function (req, res) {
-  let service = req.query.service
+  console.log(req.query.service)
+  let service = decodeURIComponent(req.query.service)
   console.log(service)
   switch (service) {
     case "SAP Service Cloud":
@@ -52,7 +53,8 @@ app.get('/groupsForService', function (req, res) {
 
 
 app.get('/servicePermissionsForGroup', function (req, res) {
-  let group = req.query.group
+  console.log(req.query.group)
+  let group = decodeURIComponent(req.query.group)
   console.log(group)
   switch (group) {
     case "ServiceEngineer":
