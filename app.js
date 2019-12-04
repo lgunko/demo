@@ -19,6 +19,71 @@ app.get('/', function (req, res) {
   });
 });
 
+
+app.get('/allServices', function (req, res) {
+
+  res.send([
+    "SAP Service Cloud",
+    "SAP Marketing Cloud",
+    "SAP Sales Cloud"
+  ]);
+
+})
+
+app.get('/groupsForService', function (req, res) {
+  let service = req.query.service
+  switch (service) {
+    case "SAP Service Cloud":
+      res.send([
+        "ServiceEngineer",
+        "ServiceConsultant",
+        "Manager",
+      ])
+    case "SAP Marketing Cloud":
+      res.send([
+        "MarketingConsultant",
+        "Manager",
+      ])
+    default:
+      res.send([])
+  }
+})
+
+
+app.get('/servicePermissionsForGroup', function (req, res) {
+  let group = req.query.group
+  switch (group) {
+    case "ServiceEngineer":
+      res.send([
+        { service: "SAP Service Cloud", permission: "ViewServiceOrdersAssignedToMe" },
+      ])
+    case "MarketingConsultant":
+      res.send([
+        { service: "SAP Marketing Cloud", permission: "ViewMarketingCampaigns" },
+      ])
+    case "Manager":
+      res.send([
+        { service: "SAP Service Cloud", permission: "ViewAllServiceOrders" },
+        { service: "SAP Service Cloud", permission: "ViewCustomerData" },
+        { service: "SAP Service Cloud", permission: "CreateServiceOrder" },
+        { service: "SAP Marketing Cloud", permission: "ViewROI" },
+      ])
+    default:
+      res.send([])
+  }
+  /*
+  res.send([
+    { service: "SAP Service Cloud", permission: "ViewAllServiceOrders" },
+    { service: "SAP Service Cloud", permission: "ViewCustomerData" },
+    { service: "SAP Service Cloud", permission: "CreateServiceOrder" },
+    { service: "SAP Service Cloud", permission: "ViewServiceOrdersAssignedToMe" },
+
+    { service: "SAP Marketing Cloud", permission: "ViewMarketingCampaigns" },
+    { service: "SAP Marketing Cloud", permission: "ViewROI" },
+  ]);
+  */
+})
+
 app.get('/callbackGetTokenByCode', async function (req, res) {
 
   let code = req.query.code;
