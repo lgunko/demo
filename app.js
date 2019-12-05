@@ -56,20 +56,20 @@ app.post('/newVersion', function (req, res) {    //new version is always active
     timestamp:new Date().getTime(), 
     permissions: req.body.permissionsFoGroup
   }
-  MongoService.getAllOrgInstance().saveOne("versions",newVersion)
-  MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
-  MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: newVersion.timestamp})
+  await MongoService.getAllOrgInstance().saveOne("versions",newVersion)
+  await MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
+  await MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: newVersion.timestamp})
 })
 
 app.post('/activateOldVersion', function (req, res) {
   let oldVersionTimestamp = req.body.timestamp
-  MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
-  MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: oldVersionTimestamp})
+  await MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
+  await MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: oldVersionTimestamp})
 })
 
 app.get('/activeVersion', function (req, res) {
-
-  res.send("v1");
+  activeVersionTimestamp = await MongoService.getAllOrgInstance().findOne("activeVersion", "active")
+  res.send(activeVersionTimestamp);
 
 })
 
