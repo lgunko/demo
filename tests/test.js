@@ -17,6 +17,14 @@ describe('Tests app', function () {
       });
   });
 
+  it('verifies delete all active versions', function (done) {
+    request.get('/deleteAllActiveVersions')
+      .expect(200).end((err, response) => {
+        test.assert(response.body, true)
+        done(err);
+      });
+  });
+
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
@@ -30,6 +38,39 @@ describe('Tests app', function () {
         lastSavedVersionId = response.body._id
         test.assert(response.body.permissions.Manager, "ViewCustomerData")
         test.assert(response.body.service, "SAP Service Cloud")
+        done(err);
+      });
+  });
+
+  it('verifies post version', function (done) {
+    request.post('/newVersion')
+      .send({
+        permissionsForGroup: {
+          "Manager": ["ViewCustomerData"]
+        },
+        service: "SAP Marketing Cloud"
+      })
+      .expect(200).end((err, response) => {
+        console.log(response.body)
+        lastSavedVersionId = response.body._id
+        test.assert(response.body.permissions.Manager, "ViewCustomerData")
+        test.assert(response.body.service, "SAP Marketing Cloud")
+        done(err);
+      });
+  });
+
+  it('verifies post version', function (done) {
+    request.post('/newVersion')
+      .send({
+        permissionsForGroup: {
+
+        },
+        service: "SAP Sales Cloud"
+      })
+      .expect(200).end((err, response) => {
+        console.log(response.body)
+        lastSavedVersionId = response.body._id
+        test.assert(response.body.service, "SAP Sales Cloud")
         done(err);
       });
   });
@@ -64,7 +105,7 @@ describe('Tests app', function () {
     request.get('/activeVersions')
       .expect(200).end((err, response) => {
         console.log(response.body)
-        test.assert(response.body.find(version=>version._id === "SAP Service Cloud").versionId, lastSavedVersionId)
+        test.assert(response.body.find(version => version._id === "SAP Service Cloud").versionId, lastSavedVersionId)
         done(err);
       });
   });

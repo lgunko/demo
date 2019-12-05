@@ -38,6 +38,14 @@ app.use((req, res, next) => {
 //CORS
 
 
+app.get('/deleteAllActiveVersions', async function (req, res) {
+  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("activeVersion")
+  allVersions.map(async version => {
+    await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", version._id)
+  })
+  res.send(true)
+})
+
 app.get('/deleteAllVersions', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
   allVersions.map(async version => {
@@ -216,7 +224,7 @@ app.get('/callbackGetTokenByCodeSSC', async function (req, res) {
     form: {
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: RedirectURL+"SSC",
+      redirect_uri: RedirectURL + "SSC",
       client_id: "T000006",
       client_secret: ClientSecret,
     },
@@ -259,7 +267,7 @@ app.get('/callbackGetTokenByCodeSMC', async function (req, res) {
     form: {
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: RedirectURL+"SMC",
+      redirect_uri: RedirectURL + "SMC",
       client_id: "T000007",
       client_secret: ClientSecret,
     },
