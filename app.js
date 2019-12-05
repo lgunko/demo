@@ -216,7 +216,7 @@ app.get('/callbackGetTokenByCodeSSC', async function (req, res) {
     form: {
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: RedirectURL,
+      redirect_uri: RedirectURL+"SSC",
       client_id: "T000006",
       client_secret: ClientSecret,
     },
@@ -259,7 +259,7 @@ app.get('/callbackGetTokenByCodeSMC', async function (req, res) {
     form: {
       grant_type: "authorization_code",
       code: code,
-      redirect_uri: RedirectURL,
+      redirect_uri: RedirectURL+"SMC",
       client_id: "T000007",
       client_secret: ClientSecret,
     },
