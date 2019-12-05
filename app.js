@@ -201,5 +201,90 @@ app.get('/callbackGetTokenByCode', async function (req, res) {
 });
 
 
+app.get('/callbackGetTokenByCodeSSC', async function (req, res) {
+
+  let code = req.query.code;
+
+  console.log(code)
+
+  let options = {
+    method: 'POST',
+    uri: YcloudTokenPostUrl,
+    headers: {
+      'Authorization': 'Basic ' + new Buffer(ClientId + ':' + ClientSecret).toString('base64')
+    },
+    form: {
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: RedirectURL,
+      client_id: "T000006",
+      client_secret: ClientSecret,
+    },
+    json: true,
+  }
+
+  console.log(options)
+
+  try {
+    let result = await rp(options);
+    console.log(result)
+    var token = result.id_token
+    console.log(token)
+    let urlToRedirect = new url.URL("https://master.d29oecan9pu8tt.amplifyapp.com");
+    urlToRedirect.searchParams.append('id_token', token);
+    console.log(urlToRedirect.toString())
+    res.redirect(urlToRedirect.toString())
+  }
+  catch (err) {
+    console.log(err)
+    res.status(403).send(err);
+  }
+
+});
+
+
+
+app.get('/callbackGetTokenByCodeSMC', async function (req, res) {
+
+  let code = req.query.code;
+
+  console.log(code)
+
+  let options = {
+    method: 'POST',
+    uri: YcloudTokenPostUrl,
+    headers: {
+      'Authorization': 'Basic ' + new Buffer(ClientId + ':' + ClientSecret).toString('base64')
+    },
+    form: {
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: RedirectURL,
+      client_id: "T000007",
+      client_secret: ClientSecret,
+    },
+    json: true,
+  }
+
+  console.log(options)
+
+  try {
+    let result = await rp(options);
+    console.log(result)
+    var token = result.id_token
+    console.log(token)
+    let urlToRedirect = new url.URL("https://master.d29oecan9pu8tt.amplifyapp.com");
+    urlToRedirect.searchParams.append('id_token', token);
+    console.log(urlToRedirect.toString())
+    res.redirect(urlToRedirect.toString())
+  }
+  catch (err) {
+    console.log(err)
+    res.status(403).send(err);
+  }
+
+});
+
+
 // Export your Express configuration so that it can be consumed by the Lambda handler
 module.exports = app
