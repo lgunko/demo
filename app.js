@@ -83,10 +83,10 @@ app.post('/newVersion', async function (req, res) {    //new version is always a
 })
 
 app.post('/activateOldVersion', async function (req, res) {
-  let versionId = req.body.versionId
-  await (await MongoService.getAllOrgInstance()).deleteOne(activeVersion, req.body.service)
-  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: req.body.service, versionId: versionId })
-  res.send({ _id: req.body.service, versionId: versionId })
+  await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", req.body.service)
+  let newActiveVersion = { _id: req.body.service, versionId: req.body.versionId }
+  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", newActiveVersion)
+  res.send(newActiveVersion)
 })
 
 app.get('/allServices', function (req, res) {
