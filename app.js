@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser());
 
 
-const MongoService = require('../../mongoService/db');
+const MongoService = require('./mongoService/db');
 const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/oauth2/token"
 
 const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/Prod/callbackGetTokenByCode";
