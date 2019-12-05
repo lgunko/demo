@@ -64,7 +64,7 @@ app.post('/newVersion', function (req, res) {    //new version is always active
 app.post('/activateOldVersion', function (req, res) {
   let oldVersionTimestamp = req.body.timestamp
   MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
-  MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: new Date().getTime()})
+  MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: oldVersionTimestamp})
 })
 
 app.get('/activeVersion', function (req, res) {
