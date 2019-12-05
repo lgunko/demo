@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 app.use(bodyParser());
 
+
+const MongoService = require('../../mongoService/db');
 const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/oauth2/token"
 
 const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/Prod/callbackGetTokenByCode";
@@ -36,12 +38,25 @@ app.use((req, res, next) => {
 //CORS
 
 
-app.get('/', function (req, res) {
-  res.send({
-    "Output": "req.query.code;"
-  });
-});
+app.get('/allVersions', function (req, res) {
+  let allVersions = MongoService.getAllOrgInstance().findAll("versions")
+  let sortedVersions = allVersions.sort(function(a, b) {
+    return b.timestamp - a.timestamp;
+  })
+  let i = 0;
+  sortedVersions.map(version => {
+    version.name = "v"+(++i)
+  })
+  res.send(sortedVersions);
 
+})
+
+
+app.get('/activeVersion', function (req, res) {
+
+  res.send("v1");
+
+})
 
 app.get('/allServices', function (req, res) {
 
