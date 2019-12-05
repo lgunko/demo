@@ -56,6 +56,7 @@ describe('Tests app', function () {
   it('verifies get active versions', function (done) {
     request.get('/activeVersion')
       .expect(200).end((err, response) => {
+        console.log(response.body)
         test.assert(response.body.versionId, lastSavedVersionId)
         done(err);
       });
@@ -65,11 +66,11 @@ describe('Tests app', function () {
     request.get('/allVersions')
       .expect(200).end((err, response) => {
         console.log(response.body)
-        test.assert(response.body[0].permissions.Manager[0], "ViewCustomerData")
-        test.assert(response.body[0].name, "v1")
         test.assert(response.body[1].permissions.Manager[0], "ViewCustomerData")
-        test.assert(response.body[1].permissions.Manager[1], "CreateServiceOrder")
-        test.assert(response.body[1].name, "v2")
+        test.assert(response.body[1].name, "v1")
+        test.assert(response.body[0].permissions.Manager[0], "ViewCustomerData")
+        test.assert(response.body[0].permissions.Manager[1], "CreateServiceOrder")
+        test.assert(response.body[0].name, "v2")
         done(err);
       });
   });

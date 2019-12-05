@@ -49,11 +49,11 @@ app.get('/deleteAllVersions', async function (req, res) {
 app.get('/allVersions', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
   let sortedVersions = allVersions.sort(function (a, b) {
-    return a.timestamp - b.timestamp;
+    return b.timestamp - a.timestamp;
   })
   let i = 0;
   sortedVersions.map(version => {
-    version.name = "v" + (++i)
+    version.name = "v" + (sortedVersions.length - (i++))
   })
   res.send(sortedVersions);
 
