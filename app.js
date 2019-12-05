@@ -65,14 +65,17 @@ app.get('/activeVersions', async function (req, res) {
 
 app.post('/newVersion', async function (req, res) {    //new version is always active
   try {
+    console.log(req.body)
     let newVersion = {
       timestamp: new Date().getTime(),
       permissions: req.body.permissionsFoGroup,
       service: req.body.service
     }
     await (await MongoService.getAllOrgInstance()).saveOne("versions", newVersion)
+    console.log(newVersion)
     await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", req.body.service)
     await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: req.body.service, versionId: newVersion._id })
+    console.log({ _id: req.body.service, versionId: newVersion._id })
     res.send(newVersion)
   } catch (err) {
     console.log(err)
