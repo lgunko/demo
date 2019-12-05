@@ -51,6 +51,23 @@ app.get('/allVersions', function (req, res) {
 
 })
 
+app.post('/createVersion', function (req, res) {
+  let newVersion = {
+    timestamp:new Date().getTime(), 
+    permissions: req.body.currentPermissions
+  }
+  MongoService.getAllOrgInstance().saveOne("versions",newVersion)
+})
+
+app.post('/activateVersion', function (req, res) {
+  let newVersion = {
+    timestamp:new Date().getTime(), 
+    permissions: req.body.currentPermissions
+  }
+  MongoService.getAllOrgInstance().saveOne("versions",{timestamp:new Date().getTime(), permissions: req.body.currentPermissions})
+  MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
+  MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: new Date().getTime()})
+})
 
 app.get('/activeVersion', function (req, res) {
 
