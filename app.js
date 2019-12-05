@@ -38,39 +38,47 @@ app.use((req, res, next) => {
 //CORS
 
 
-app.get('/allVersions', function (req, res) {
-  let allVersions = MongoService.getAllOrgInstance().findAll("versions")
-  let sortedVersions = allVersions.sort(function(a, b) {
-    return b.timestamp - a.timestamp;
+app.get('/deleteAllVersions', async function (req, res) {
+  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
+  allVersions.map(async version =>{
+    await (await MongoService.getAllOrgInstance()).deleteOne("versions", version._id)
+  })
+  res.send(true)
+})
+
+app.get('/allVersions', async function (req, res) {
+  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
+  let sortedVersions = allVersions.sort(function (a, b) {
+    return a.timestamp - b.timestamp;
   })
   let i = 0;
   sortedVersions.map(version => {
-    version.name = "v"+(++i)
+    version.name = "v" + (++i)
   })
   res.send(sortedVersions);
 
 })
 
-app.post('/newVersion', function (req, res) {    //new version is always active
-  let newVersion = {
-    timestamp:new Date().getTime(), 
-    permissions: req.body.permissionsFoGroup
+app.post('/newVersion', async function (req, res) {    //new version is always active
+  try {
+    let newVersion = {
+      timestamp: new Date().getTime(),
+      permissions: req.body.permissionsFoGroup
+    }
+    await (await MongoService.getAllOrgInstance()).saveOne("versions", newVersion)
+    await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", "active" )
+    await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", timestamp: newVersion.timestamp })
+    res.send(newVersion)
+  } catch (err) {
+    console.log(err)
   }
-  await MongoService.getAllOrgInstance().saveOne("versions",newVersion)
-  await MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
-  await MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: newVersion.timestamp})
 })
 
-app.post('/activateOldVersion', function (req, res) {
+app.post('/activateOldVersion', async function (req, res) {
   let oldVersionTimestamp = req.body.timestamp
-  await MongoService.getAllOrgInstance().deleteOne(activeVersion,{_id:"active"})
-  await MongoService.getAllOrgInstance().saveOne("activeVersion",{_id:"active", timestamp: oldVersionTimestamp})
-})
-
-app.get('/activeVersion', function (req, res) {
-  activeVersionTimestamp = await MongoService.getAllOrgInstance().findOne("activeVersion", "active")
-  res.send(activeVersionTimestamp);
-
+  await (await MongoService.getAllOrgInstance()).deleteOne(activeVersion, "active" )
+  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", timestamp: oldVersionTimestamp })
+  res.send({ _id: "active", timestamp: oldVersionTimestamp })
 })
 
 app.get('/allServices', function (req, res) {

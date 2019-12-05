@@ -37,22 +37,12 @@ async function initiateDbClientService() {
 }
 
 const MongoService = (function () {
-    let _serviceInstances = {};
 
     let _allOrgServiceInstance = null;
     let instanceDbClientService = null;
 
 
     return {
-        getInstance: async function (org) {
-            if (!instanceDbClientService) {
-                instanceDbClientService = await initiateDbClientService();
-            }
-            if (!_serviceInstances[org]) {
-                _serviceInstances[org] = new _MongoService(instanceDbClientService, org);
-            }
-            return _serviceInstances[org];
-        },
         getAllOrgInstance: async function () {
             if (!instanceDbClientService) {
                 instanceDbClientService = await initiateDbClientService();
@@ -66,7 +56,7 @@ const MongoService = (function () {
 })();
 
 
-
+/*
 class _MongoService {
 
     constructor(dbClientService, org) {
@@ -152,7 +142,7 @@ class _MongoService {
         return query;
     }
 }
-
+*/
 
 class _AllOrgsMongoService {
 
@@ -160,11 +150,33 @@ class _AllOrgsMongoService {
         this.dbClientService = dbClientService;
     }
 
-    async findEmployeeOrgsByEmail(email) {
+    async saveOne(collectionName, object) {
         let startTime = new Date().getTime();
-        let result = await (await this.dbClientService.db).collection("employees").find({ email: email }, { projection: { _id: 0, org: 1, role: 1 } }).toArray()
-        console.log("findEmployeeOrgsByEmail: time: " + (new Date().getTime() - startTime));
-        return result
+        let result = await (await this.dbClientService.db).collection(collectionName).insertOne(object);
+        console.log("saveOne: " + collectionName + " time: " + (new Date().getTime() - startTime));
+        return result;
+    }
+
+    async deleteOne(collectionName, id) {
+        let queryById = {};
+        queryById['_id'] = id;
+        return (await (await this.dbClientService.db).collection(collectionName).deleteOne(queryById)).deletedCount;
+    }
+
+    async findAll(collectionName, query, projection) {
+        let startTime = new Date().getTime();
+        let result = await (await this.dbClientService.db).collection(collectionName).find(query, { projection: projection }).toArray();
+        console.log("findAll: " + collectionName + " query: " + JSON.stringify(query) + " projection: " + JSON.stringify(projection) + " time: " + (new Date().getTime() - startTime));
+        return result;
+    }
+
+    async findOne(collectionName, id, projection) {
+        let queryById = {};
+        queryById['_id'] = new ObjectId(id);
+        let startTime = new Date().getTime();
+        let result = await (await this.dbClientService.db).collection(collectionName).findOne(queryById, { projection: projection });
+        console.log("findOne: " + collectionName + " query: " + JSON.stringify(queryById) + " projection: " + JSON.stringify(projection) + " time: " + (new Date().getTime() - startTime));
+        return result;
     }
 
 }
