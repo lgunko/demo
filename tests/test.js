@@ -20,7 +20,7 @@ describe('Tests app', function () {
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
-        permissionsFoGroup: {
+        permissionsForGroup: {
           "Manager": ["ViewCustomerData"]
         },
         service: "SAP Service Cloud"
@@ -46,7 +46,7 @@ describe('Tests app', function () {
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
-        permissionsFoGroup: {
+        permissionsForGroup: {
           "Manager": ["ViewCustomerData", "CreateServiceOrder"]
         },
         service: "SAP Service Cloud"

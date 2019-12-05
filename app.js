@@ -68,7 +68,7 @@ app.post('/newVersion', async function (req, res) {    //new version is always a
     console.log(req.body)
     let newVersion = {
       timestamp: new Date().getTime(),
-      permissions: req.body.permissionsFoGroup,
+      permissions: req.body.permissionsForGroup,
       service: req.body.service
     }
     await (await MongoService.getAllOrgInstance()).saveOne("versions", newVersion)
