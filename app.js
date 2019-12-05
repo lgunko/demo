@@ -211,7 +211,7 @@ app.get('/callbackGetTokenByCodeSSC', async function (req, res) {
     method: 'POST',
     uri: YcloudTokenPostUrl,
     headers: {
-      'Authorization': 'Basic ' + new Buffer(ClientId + ':' + ClientSecret).toString('base64')
+      'Authorization': 'Basic ' + new Buffer("T000006" + ':' + ClientSecret).toString('base64')
     },
     form: {
       grant_type: "authorization_code",
@@ -254,7 +254,7 @@ app.get('/callbackGetTokenByCodeSMC', async function (req, res) {
     method: 'POST',
     uri: YcloudTokenPostUrl,
     headers: {
-      'Authorization': 'Basic ' + new Buffer(ClientId + ':' + ClientSecret).toString('base64')
+      'Authorization': 'Basic ' + new Buffer("T000007" + ':' + ClientSecret).toString('base64')
     },
     form: {
       grant_type: "authorization_code",
