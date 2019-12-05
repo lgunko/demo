@@ -127,6 +127,10 @@ app.get('/servicePermissionsForGroup', function (req, res) {
       res.send([
         { service: "SAP Service Cloud", permission: "ViewServiceOrdersAssignedToMe" },
       ])
+    case "ServiceConsultant":
+      res.send([
+        { service: "SAP Service Cloud", permission: "ViewAllServiceOrders" },
+      ])
     case "MarketingConsultant":
       res.send([
         { service: "SAP Marketing Cloud", permission: "ViewMarketingCampaigns" },
