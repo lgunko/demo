@@ -6,6 +6,8 @@ const app = require('../app.js');
 
 const request = supertest(app);
 
+var lastSavedVersionId = "";
+
 describe('Tests app', function () {
   it('verifies delete all versions', function (done) {
     request.get('/deleteAllVersions')
@@ -23,7 +25,16 @@ describe('Tests app', function () {
         }
       })
       .expect(200).end((err, response) => {
+        lastSavedVersionId = response.body._id
         test.assert(response.body.permissions.Manager, "ViewCustomerData")
+        done(err);
+      });
+  });
+
+  it('verifies get active versions', function (done) {
+    request.get('/activeVersion')
+      .expect(200).end((err, response) => {
+        test.assert(response.body.versionId, lastSavedVersionId)
         done(err);
       });
   });
@@ -36,7 +47,16 @@ describe('Tests app', function () {
         }
       })
       .expect(200).end((err, response) => {
+        lastSavedVersionId = response.body._id
         test.assert(response.body.permissions.Manager, "ViewCustomerData")
+        done(err);
+      });
+  });
+
+  it('verifies get active versions', function (done) {
+    request.get('/activeVersion')
+      .expect(200).end((err, response) => {
+        test.assert(response.body.versionId, lastSavedVersionId)
         done(err);
       });
   });
@@ -44,6 +64,7 @@ describe('Tests app', function () {
   it('verifies get all versions', function (done) {
     request.get('/allVersions')
       .expect(200).end((err, response) => {
+        console.log(response.body)
         test.assert(response.body[0].permissions.Manager[0], "ViewCustomerData")
         test.assert(response.body[0].name, "v1")
         test.assert(response.body[1].permissions.Manager[0], "ViewCustomerData")

@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 
 app.get('/deleteAllVersions', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
-  allVersions.map(async version =>{
+  allVersions.map(async version => {
     await (await MongoService.getAllOrgInstance()).deleteOne("versions", version._id)
   })
   res.send(true)
@@ -59,6 +59,11 @@ app.get('/allVersions', async function (req, res) {
 
 })
 
+app.get('/activeVersion', async function (req, res) {
+  let activeVersion = await (await MongoService.getAllOrgInstance()).findOne("activeVersion", "active")
+  res.send(activeVersion);
+})
+
 app.post('/newVersion', async function (req, res) {    //new version is always active
   try {
     let newVersion = {
@@ -66,8 +71,8 @@ app.post('/newVersion', async function (req, res) {    //new version is always a
       permissions: req.body.permissionsFoGroup
     }
     await (await MongoService.getAllOrgInstance()).saveOne("versions", newVersion)
-    await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", "active" )
-    await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", timestamp: newVersion.timestamp })
+    await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", "active")
+    await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", versionId: newVersion._id })
     res.send(newVersion)
   } catch (err) {
     console.log(err)
@@ -75,10 +80,10 @@ app.post('/newVersion', async function (req, res) {    //new version is always a
 })
 
 app.post('/activateOldVersion', async function (req, res) {
-  let oldVersionTimestamp = req.body.timestamp
-  await (await MongoService.getAllOrgInstance()).deleteOne(activeVersion, "active" )
-  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", timestamp: oldVersionTimestamp })
-  res.send({ _id: "active", timestamp: oldVersionTimestamp })
+  let oldVersionTimestamp = req.body.versionId
+  await (await MongoService.getAllOrgInstance()).deleteOne(activeVersion, "active")
+  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", versionId: versionId })
+  res.send({ _id: "active", versionId: versionId })
 })
 
 app.get('/allServices', function (req, res) {

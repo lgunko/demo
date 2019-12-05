@@ -172,7 +172,7 @@ class _AllOrgsMongoService {
 
     async findOne(collectionName, id, projection) {
         let queryById = {};
-        queryById['_id'] = new ObjectId(id);
+        queryById['_id'] = id;
         let startTime = new Date().getTime();
         let result = await (await this.dbClientService.db).collection(collectionName).findOne(queryById, { projection: projection });
         console.log("findOne: " + collectionName + " query: " + JSON.stringify(queryById) + " projection: " + JSON.stringify(projection) + " time: " + (new Date().getTime() - startTime));
