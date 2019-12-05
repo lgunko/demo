@@ -22,19 +22,23 @@ describe('Tests app', function () {
       .send({
         permissionsFoGroup: {
           "Manager": ["ViewCustomerData"]
-        }
+        },
+        service: "SAP Service Cloud"
       })
       .expect(200).end((err, response) => {
+        console.log(response.body)
         lastSavedVersionId = response.body._id
         test.assert(response.body.permissions.Manager, "ViewCustomerData")
+        test.assert(response.body.service, "SAP Service Cloud")
         done(err);
       });
   });
 
   it('verifies get active versions', function (done) {
-    request.get('/activeVersion')
+    request.get('/activeVersions')
       .expect(200).end((err, response) => {
-        test.assert(response.body.versionId, lastSavedVersionId)
+        console.log(response.body)
+        test.assert(response.body.find(version => version._id === "SAP Service Cloud").versionId, lastSavedVersionId)
         done(err);
       });
   });
@@ -44,26 +48,29 @@ describe('Tests app', function () {
       .send({
         permissionsFoGroup: {
           "Manager": ["ViewCustomerData", "CreateServiceOrder"]
-        }
+        },
+        service: "SAP Service Cloud"
       })
       .expect(200).end((err, response) => {
+        console.log(response.body)
         lastSavedVersionId = response.body._id
         test.assert(response.body.permissions.Manager, "ViewCustomerData")
+        test.assert(response.body.service, "SAP Service Cloud")
         done(err);
       });
   });
 
   it('verifies get active versions', function (done) {
-    request.get('/activeVersion')
+    request.get('/activeVersions')
       .expect(200).end((err, response) => {
         console.log(response.body)
-        test.assert(response.body.versionId, lastSavedVersionId)
+        test.assert(response.body.find(version=>version._id === "SAP Service Cloud").versionId, lastSavedVersionId)
         done(err);
       });
   });
 
   it('verifies get all versions', function (done) {
-    request.get('/allVersions')
+    request.get('/allVersions?service=' + encodeURIComponent("SAP Service Cloud"))
       .expect(200).end((err, response) => {
         console.log(response.body)
         test.assert(response.body[1].permissions.Manager[0], "ViewCustomerData")

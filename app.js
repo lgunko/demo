@@ -48,7 +48,7 @@ app.get('/deleteAllVersions', async function (req, res) {
 
 app.get('/allVersions', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
-  let sortedVersions = allVersions.sort(function (a, b) {
+  let sortedVersions = allVersions.filter(version => version.service === req.query.service).sort(function (a, b) {
     return b.timestamp - a.timestamp;
   })
   let i = 0;
@@ -56,23 +56,23 @@ app.get('/allVersions', async function (req, res) {
     version.name = "v" + (sortedVersions.length - (i++))
   })
   res.send(sortedVersions);
-
 })
 
-app.get('/activeVersion', async function (req, res) {
-  let activeVersion = await (await MongoService.getAllOrgInstance()).findOne("activeVersion", "active")
-  res.send(activeVersion);
+app.get('/activeVersions', async function (req, res) {
+  let activeVersions = await (await MongoService.getAllOrgInstance()).findAll("activeVersion")
+  res.send(activeVersions);
 })
 
 app.post('/newVersion', async function (req, res) {    //new version is always active
   try {
     let newVersion = {
       timestamp: new Date().getTime(),
-      permissions: req.body.permissionsFoGroup
+      permissions: req.body.permissionsFoGroup,
+      service: req.body.service
     }
     await (await MongoService.getAllOrgInstance()).saveOne("versions", newVersion)
-    await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", "active")
-    await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", versionId: newVersion._id })
+    await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", req.body.service)
+    await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: req.body.service, versionId: newVersion._id })
     res.send(newVersion)
   } catch (err) {
     console.log(err)
@@ -80,10 +80,10 @@ app.post('/newVersion', async function (req, res) {    //new version is always a
 })
 
 app.post('/activateOldVersion', async function (req, res) {
-  let oldVersionTimestamp = req.body.versionId
-  await (await MongoService.getAllOrgInstance()).deleteOne(activeVersion, "active")
-  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: "active", versionId: versionId })
-  res.send({ _id: "active", versionId: versionId })
+  let versionId = req.body.versionId
+  await (await MongoService.getAllOrgInstance()).deleteOne(activeVersion, req.body.service)
+  await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", { _id: req.body.service, versionId: versionId })
+  res.send({ _id: req.body.service, versionId: versionId })
 })
 
 app.get('/allServices', function (req, res) {
@@ -130,9 +130,7 @@ app.get('/groupsForService', function (req, res) {
 
 
 app.get('/servicePermissionsForGroup', function (req, res) {
-  console.log(req.query.group)
   let group = decodeURIComponent(req.query.group)
-  console.log(group)
   switch (group) {
     case "ServiceEngineer":
       res.send([
@@ -156,17 +154,6 @@ app.get('/servicePermissionsForGroup', function (req, res) {
     default:
       res.send([])
   }
-  /*
-  res.send([
-    { service: "SAP Service Cloud", permission: "ViewAllServiceOrders" },
-    { service: "SAP Service Cloud", permission: "ViewCustomerData" },
-    { service: "SAP Service Cloud", permission: "CreateServiceOrder" },
-    { service: "SAP Service Cloud", permission: "ViewServiceOrdersAssignedToMe" },
-
-    { service: "SAP Marketing Cloud", permission: "ViewMarketingCampaigns" },
-    { service: "SAP Marketing Cloud", permission: "ViewROI" },
-  ]);
-  */
 })
 
 app.get('/callbackGetTokenByCode', async function (req, res) {
