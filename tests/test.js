@@ -130,4 +130,12 @@ describe('Tests app', function () {
         done(err);
       });
   });
+
+  it('creates tar gz', function (done) {
+    request.get('/bundle/serviceCloud')
+      .expect(200).end((err, response) => {
+        console.log(response.body)
+        done(err);
+      });
+  });
 });

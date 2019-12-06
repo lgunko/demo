@@ -1,0 +1,49 @@
+{
+    "permissions": [
+        {
+            "service": "SAP Service Cloud",
+            "groups": {
+                "Manager": {
+                    "group": "Manager",
+                    "permissions": [
+                        "ViewAllServiceOrders",
+                        "ViewCustomerData",
+                        "CreateServiceOrder"
+                    ]
+                },
+                "ServiceConsultant": {
+                    "group": "ServiceConsultant",
+                    "permissions": [
+                        "ViewAllServiceOrders",
+
+                        "CreateServiceOrder"
+                    ]
+                },
+                "ServiceEngineer": {
+                    "group": "ServiceEngineer",
+                    "permissions": [
+                        "ViewServiceOrdersAssignedToMe"
+                    ]
+                }
+            }
+        },
+        {
+            "service": "SAP Marketing Cloud",
+            "groups": {
+                "Manager": {
+                    "group": "Manager",
+                    "permissions": [
+                        "ViewROI",
+                        "ViewMarketingCampaigns"
+                    ]
+                },
+                "MarketingConsultant": {
+                    "group": "ServiceConsultant",
+                    "permissions": [
+                        "ViewMarketingCampaigns"
+                    ]
+                }
+            }
+        }
+    ]
+}

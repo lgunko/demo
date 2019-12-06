@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 app.use(bodyParser());
 
+const targz = require('targz')
 
 const MongoService = require('./mongoService/db');
 const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/oauth2/token"
@@ -15,6 +16,7 @@ const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/P
 const ClientId = "T000003";
 const ClientSecret = "2913671Oks";
 
+app.use('/bundles', express.static('gz'))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -37,6 +39,18 @@ app.use((req, res, next) => {
 });
 //CORS
 
+app.get('/bundle/serviceCloud', async function (req, res) {
+  targz.compress({
+    src: './opadatalocal',
+    dest: './gz/opa.tar.gz'
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(1)
+    }
+  });
+})
 
 app.get('/timestamp', async function (req, res) {
   res.send({ now: new Date().getTime() })
