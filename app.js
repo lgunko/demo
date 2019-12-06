@@ -40,6 +40,7 @@ app.use((req, res, next) => {
 //CORS
 
 app.get('/bundle/serviceCloud', async function (req, res) {
+  console.log('/bundle/serviceCloud')
   targz.compress({
     src: './opadatalocal',
     dest: './gz/opa.tar.gz'
