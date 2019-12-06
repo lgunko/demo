@@ -38,6 +38,10 @@ app.use((req, res, next) => {
 //CORS
 
 
+app.get('/timestamp', async function (req, res) {
+  res.send(new Date().getTime())
+})
+
 app.get('/deleteAllActiveVersions', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("activeVersion")
   allVersions.map(async version => {
