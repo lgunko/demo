@@ -41,12 +41,12 @@ describe('Tests app', function () {
         done(err);
       });
   });
-
+//////////////////////////////////////////////////
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
         permissionsForGroup: {
-          "Manager": ["ViewCustomerData"]
+          "Manager": ["ViewMarketingCampaigns", "ViewROI"]
         },
         service: "SAP Marketing Cloud"
       })
@@ -58,7 +58,7 @@ describe('Tests app', function () {
         done(err);
       });
   });
-
+//////////////////////////////////////////////////
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
@@ -84,6 +84,8 @@ describe('Tests app', function () {
       });
   });
 
+
+  //////////////////////////////////////////////////
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
@@ -102,7 +104,7 @@ describe('Tests app', function () {
         done(err);
       });
   });
-
+//////////////////////////////////////////////////
   it('verifies get active versions', function (done) {
     request.get('/activeVersions')
       .expect(200).end((err, response) => {
