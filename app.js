@@ -3,14 +3,13 @@ var app = express();
 var fs = require("fs");
 
 const url = require('url');
-const path = require('path');
 
 var rp = require('request-promise');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser());
 
-const targz = require('targz')
+const tar = require("tar")
 
 const MongoService = require('./mongoService/db');
 const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/oauth2/token"
@@ -66,7 +65,7 @@ app.get('/bundle/serviceCloud', async function (req, res) {
 
   console.log('deleted tmp gz file')
   try {
-    fs.renameSync('./opadatalocal/getPermissions.rego', '/tmp/getPermissions.rego');
+    fs.copyFileSync('./opadatalocal/getPermissions.rego', '/tmp/getPermissions.rego');
   } catch (err) {
     console.log(err)
   }
@@ -74,9 +73,17 @@ app.get('/bundle/serviceCloud', async function (req, res) {
   fs.writeFileSync('/tmp/data.json', JSON.stringify(permissionsjson));
   console.log('wrote data.json file')
 
-  targz.compress({
+  tar.c(
+    {
+      gzip: true,
+      file: '/tmp/opa.tar.gz'
+    },
+    ['/tmp/data.json', '/tmp/getPermissions.rego']
+  )
+
+  /*targz.compress({
     src: '/tmp',
-    dest: '/tmp/opa.tar.gz'
+    dest: './opadatalocal/opa.tar.gz'
   }, function (err) {
     if (err) {
       console.log(err);
@@ -84,7 +91,7 @@ app.get('/bundle/serviceCloud', async function (req, res) {
       console.log("compressed")
       res.sendFile('/tmp/opa.tar.gz')
     }
-  });
+  });*/
 })
 
 app.get('/timestamp', async function (req, res) {

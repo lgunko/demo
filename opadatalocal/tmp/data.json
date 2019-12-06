@@ -1,0 +1,1 @@
+{"permissions":[{"service":"SAP Service Cloud","groups":{"Manager":{"permissions":["ViewCustomerData","CreateServiceOrder","ViewAllServiceOrders"]},"ServiceEngineer":{"permissions":["ViewServiceOrdersAssignedToMe"]},"ServiceConsultant":{"permissions":["ViewCustomerData","ViewAllServiceOrders"]}}}]}
