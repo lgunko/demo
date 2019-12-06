@@ -122,4 +122,12 @@ describe('Tests app', function () {
         done(err);
       });
   });
+  
+  it('verifies get timestamp', function (done) {
+    request.get('/timestamp')
+      .expect(200).end((err, response) => {
+        console.log(response.body.now)
+        done(err);
+      });
+  });
 });
