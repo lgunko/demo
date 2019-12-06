@@ -29,7 +29,7 @@ describe('Tests app', function () {
     request.post('/newVersion')
       .send({
         permissionsForGroup: {
-          "Manager": ["ViewCustomerData"]
+          "Manager": ["ViewCustomerData", "CreateServiceOrder", "ViewAllServiceOrders"]
         },
         service: "SAP Service Cloud"
       })
@@ -88,7 +88,9 @@ describe('Tests app', function () {
     request.post('/newVersion')
       .send({
         permissionsForGroup: {
-          "Manager": ["ViewCustomerData", "CreateServiceOrder"]
+          "Manager": ["ViewCustomerData", "CreateServiceOrder", "ViewAllServiceOrders"],
+          "ServiceEngineer": ["ViewServiceOrdersAssignedToMe"],
+          "ServiceConsultant": ["ViewCustomerData", "ViewAllServiceOrders"],
         },
         service: "SAP Service Cloud"
       })

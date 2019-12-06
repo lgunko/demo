@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var fs = require("fs");
 
 const url = require('url');
 const path = require('path');
@@ -40,14 +41,47 @@ app.use((req, res, next) => {
 //CORS
 
 app.get('/bundle/serviceCloud', async function (req, res) {
-  console.log('/bundle/serviceCloud')
+  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
+
+  let sortedVersions = allVersions.filter(version => version.service === 'SAP Service Cloud').sort(function (a, b) {
+    return b.timestamp - a.timestamp;
+  })
+
+  let permissionsjson = {}
+  permissionsjson.permissions = []
+  let objectToadd = {}
+  objectToadd.service = sortedVersions[0].service
+  objectToadd.groups = {}
+  Object.keys(sortedVersions[0].permissions).map(group => {
+    objectToadd.groups[group] = { permissions: sortedVersions[0].permissions[group] }
+  })
+  permissionsjson.permissions.push(objectToadd)
+  console.log(JSON.stringify(permissionsjson))
+
+  try {
+    fs.unlinkSync('/tmp/opa.tar.gz')
+  } catch (err) {
+    console.log(err)
+  }
+
+  console.log('deleted tmp gz file')
+  try {
+    fs.renameSync('./opadatalocal/getPermissions.rego', '/tmp/getPermissions.rego');
+  } catch (err) {
+    console.log(err)
+  }
+  console.log('moved getPermissions.rego file')
+  fs.writeFileSync('/tmp/data.json', JSON.stringify(permissionsjson));
+  console.log('wrote data.json file')
+
   targz.compress({
-    src: './opadatalocal',
+    src: '/tmp',
     dest: '/tmp/opa.tar.gz'
   }, function (err) {
     if (err) {
       console.log(err);
     } else {
+      console.log("compressed")
       res.sendFile('/tmp/opa.tar.gz')
     }
   });
