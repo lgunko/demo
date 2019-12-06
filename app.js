@@ -65,7 +65,7 @@ app.get('/data/bundle', async function (req, res) {
   res.send(permissionsjson)
 })
 
-app.get('/bundle/serviceCloud', async function (req, res) {
+app.get('/bundle/all', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
 
   let permissionsjson = {}
