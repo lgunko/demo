@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 
 
 app.get('/timestamp', async function (req, res) {
-  res.send(new Date().getTime())
+  res.send({ now: new Date().getTime() })
 })
 
 app.get('/deleteAllActiveVersions', async function (req, res) {
