@@ -2,14 +2,11 @@ var express = require('express');
 var app = express();
 
 const url = require('url');
-const path = require('path');
-
 var rp = require('request-promise');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser());
 
-const targz = require('targz')
 
 const MongoService = require('./mongoService/db');
 const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/oauth2/token"
@@ -17,6 +14,7 @@ const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/o
 const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/Prod/callbackGetTokenByCode";
 const ClientId = "T000003";
 const ClientSecret = "2913671Oks";
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -38,7 +36,6 @@ app.use((req, res, next) => {
   }
 });
 //CORS
-
 
 
 app.get('/timestamp', async function (req, res) {
