@@ -39,6 +39,25 @@ app.use((req, res, next) => {
 });
 //CORS
 
+app.get('/data/bundle/serviceCloud', async function (req, res) {
+  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
+
+  let sortedVersions = allVersions.filter(version => version.service === 'SAP Service Cloud').sort(function (a, b) {
+    return b.timestamp - a.timestamp;
+  })
+
+  let permissionsjson = {}
+  permissionsjson.permissions = []
+  let objectToadd = {}
+  objectToadd.service = sortedVersions[0].service
+  objectToadd.groups = {}
+  Object.keys(sortedVersions[0].permissions).map(group => {
+    objectToadd.groups[group] = { permissions: sortedVersions[0].permissions[group] }
+  })
+  permissionsjson.permissions.push(objectToadd)
+  res.send(permissionsjson)
+})
+
 app.get('/bundle/serviceCloud', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
 
