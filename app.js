@@ -39,40 +39,40 @@ app.use((req, res, next) => {
 });
 //CORS
 
-function getObjectToAddToBundle(allVersions, serviceName) {
-  let sortedVersions = allVersions.filter(version => version.service === serviceName).sort(function (a, b) {
-    return b.timestamp - a.timestamp;
-  })
+async function getObjectToAddToBundle(serviceName) {
+  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
+  let activeVersions = await (await MongoService.getAllOrgInstance()).findAll("activeVersion")
+  let curActive = activeVersions.find(version => version._id == serviceName)
+
+  let curVersion = allVersions.find(version => JSON.stringify(version._id) == JSON.stringify(curActive.versionId))
 
   let objectToadd = {}
-  objectToadd.service = sortedVersions[0].service
+  objectToadd.service = curVersion.service
   objectToadd.groups = {}
-  Object.keys(sortedVersions[0].permissions).map(group => {
-    objectToadd.groups[group] = { permissions: sortedVersions[0].permissions[group] }
+  Object.keys(curVersion.permissions).map(group => {
+    objectToadd.groups[group] = { permissions: curVersion.permissions[group] }
   })
   return objectToadd
 }
 
 app.get('/data/bundle', async function (req, res) {
-  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
 
   let permissionsjson = {}
   permissionsjson.permissions = []
 
-  permissionsjson.permissions.push(getObjectToAddToBundle(allVersions, 'SAP Service Cloud'))
-  permissionsjson.permissions.push(getObjectToAddToBundle(allVersions, 'SAP Marketing Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Service Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Marketing Cloud'))
 
   res.send(permissionsjson)
 })
 
 app.get('/bundle/all', async function (req, res) {
-  let allVersions = await (await MongoService.getAllOrgInstance()).findAll("versions")
 
   let permissionsjson = {}
   permissionsjson.permissions = []
 
-  permissionsjson.permissions.push(getObjectToAddToBundle(allVersions, 'SAP Service Cloud'))
-  permissionsjson.permissions.push(getObjectToAddToBundle(allVersions, 'SAP Marketing Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Service Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Marketing Cloud'))
 
   console.log(JSON.stringify(permissionsjson))
 
