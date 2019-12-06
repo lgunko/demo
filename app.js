@@ -39,32 +39,7 @@ app.use((req, res, next) => {
 });
 //CORS
 
-app.get('/bundle/serviceCloud', async function (req, res) {
-  targz.compress({
-    src: './opadatalocal',
-    dest: './gz/opa.tar.gz'
-  }, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      var options = {
-        root: path.join(__dirname, 'gz'),
-        dotfiles: 'deny',
-        headers: {
-          'x-timestamp': Date.now(),
-          'x-sent': true
-        }
-      }
-      res.sendFile('opa.tar.gz', options, function (err) {
-        if (err) {
-          console.log(err)
-        } else {
-          console.log('Sent')
-        }
-      })
-    }
-  });
-})
+
 
 app.get('/timestamp', async function (req, res) {
   res.send({ now: new Date().getTime() })
