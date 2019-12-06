@@ -63,13 +63,6 @@ app.get('/bundle/serviceCloud', async function (req, res) {
     console.log(err)
   }
 
-  console.log('deleted tmp gz file')
-  try {
-    fs.copyFileSync('./opadatalocal/getPermissions.rego', '/tmp/getPermissions.rego');
-  } catch (err) {
-    console.log(err)
-  }
-  console.log('moved getPermissions.rego file')
   fs.writeFileSync('/tmp/data.json', JSON.stringify(permissionsjson));
   console.log('wrote data.json file')
 
@@ -78,21 +71,10 @@ app.get('/bundle/serviceCloud', async function (req, res) {
       gzip: true,
       file: '/tmp/opa.tar.gz'
     },
-    ['/tmp/data.json', '/tmp/getPermissions.rego']
+    ['/tmp/data.json', './opadatalocal/getPermissions.rego']
   )
   console.log("compressed")
   res.sendFile('/tmp/opa.tar.gz')
-  /*targz.compress({
-    src: '/tmp',
-    dest: './opadatalocal/opa.tar.gz'
-  }, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("compressed")
-      res.sendFile('/tmp/opa.tar.gz')
-    }
-  });*/
 })
 
 app.get('/timestamp', async function (req, res) {
