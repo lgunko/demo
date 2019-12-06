@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 
 const url = require('url');
+const path = require('path');
+
 var rp = require('request-promise');
 var bodyParser = require('body-parser');
 
@@ -15,8 +17,6 @@ const YcloudTokenPostUrl = "https://c4id-iam-test-one.accounts400.ondemand.com/o
 const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/Prod/callbackGetTokenByCode";
 const ClientId = "T000003";
 const ClientSecret = "2913671Oks";
-
-app.use('/bundles', express.static('gz'))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -47,7 +47,21 @@ app.get('/bundle/serviceCloud', async function (req, res) {
     if (err) {
       console.log(err);
     } else {
-      res.send(1)
+      var options = {
+        root: path.join(__dirname, 'gz'),
+        dotfiles: 'deny',
+        headers: {
+          'x-timestamp': Date.now(),
+          'x-sent': true
+        }
+      }
+      res.sendFile('opa.tar.gz', options, function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('Sent')
+        }
+      })
     }
   });
 })
