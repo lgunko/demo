@@ -73,14 +73,15 @@ app.get('/bundle/serviceCloud', async function (req, res) {
   fs.writeFileSync('/tmp/data.json', JSON.stringify(permissionsjson));
   console.log('wrote data.json file')
 
-  tar.c(
+  await tar.c(
     {
       gzip: true,
       file: '/tmp/opa.tar.gz'
     },
     ['/tmp/data.json', '/tmp/getPermissions.rego']
   )
-
+  console.log("compressed")
+  res.sendFile('/tmp/opa.tar.gz')
   /*targz.compress({
     src: '/tmp',
     dest: './opadatalocal/opa.tar.gz'
