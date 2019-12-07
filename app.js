@@ -61,7 +61,7 @@ app.get('/data/bundle', async function (req, res) {
   permissionsjson.permissions = []
 
   permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Service Cloud'))
-  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Marketing Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Customer Data Platform'))
 
   res.send(permissionsjson)
 })
@@ -72,7 +72,7 @@ app.get('/bundle/all', async function (req, res) {
   permissionsjson.permissions = []
 
   permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Service Cloud'))
-  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Marketing Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Customer Data Platform'))
 
   console.log(JSON.stringify(permissionsjson))
 
@@ -163,7 +163,7 @@ app.get('/allServices', function (req, res) {
 
   res.send([
     "SAP Service Cloud",
-    "SAP Marketing Cloud",
+    "SAP Customer Data Platform",
     "SAP Sales Cloud"
   ]);
 
@@ -175,7 +175,7 @@ app.get('/allGroups', function (req, res) {
     "ServiceEngineer",
     "ServiceConsultant",
     "Manager",
-    "MarketingConsultant",
+    "Consultant",
   ]);
 
 })
@@ -191,9 +191,9 @@ app.get('/groupsForService', function (req, res) {
         "ServiceConsultant",
         "Manager",
       ])
-    case "SAP Marketing Cloud":
+    case "SAP Customer Data Platform":
       res.send([
-        "MarketingConsultant",
+        "Consultant",
         "Manager",
       ])
     default:
@@ -202,7 +202,7 @@ app.get('/groupsForService', function (req, res) {
 })
 
 
-app.get('/servicePermissionsForGroup', function (req, res) {
+/*app.get('/servicePermissionsForGroup', function (req, res) {
   let group = decodeURIComponent(req.query.group)
   switch (group) {
     case "ServiceEngineer":
@@ -213,21 +213,21 @@ app.get('/servicePermissionsForGroup', function (req, res) {
       res.send([
         { service: "SAP Service Cloud", permission: "ViewAllServiceOrders" },
       ])
-    case "MarketingConsultant":
+    case "Consultant":
       res.send([
-        { service: "SAP Marketing Cloud", permission: "ViewMarketingCampaigns" },
+        { service: "SAP Customer Data Platform", permission: "ViewMarketingCampaigns" },
       ])
     case "Manager":
       res.send([
         { service: "SAP Service Cloud", permission: "ViewAllServiceOrders" },
         { service: "SAP Service Cloud", permission: "ViewCustomerData" },
         { service: "SAP Service Cloud", permission: "CreateServiceOrder" },
-        { service: "SAP Marketing Cloud", permission: "ViewROI" },
+        { service: "SAP Customer Data Platform", permission: "ViewROI" },
       ])
     default:
       res.send([])
   }
-})
+})*/
 
 app.get('/callbackGetTokenByCode', async function (req, res) {
 

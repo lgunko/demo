@@ -29,6 +29,7 @@ describe('Tests app', function () {
     request.post('/newVersion')
       .send({
         permissionsForGroup: {
+          "ServiceEngineer": ["ViewServiceOrdersAssignedToMe"],
           "Manager": ["ViewCustomerData", "CreateServiceOrder", "ViewAllServiceOrders"]
         },
         service: "SAP Service Cloud"
@@ -46,15 +47,15 @@ describe('Tests app', function () {
     request.post('/newVersion')
       .send({
         permissionsForGroup: {
-          "Manager": ["ViewMarketingCampaigns", "ViewROI"]
+          "Manager": ["ViewCustomerData", "ViewCustomerContactData"]
         },
-        service: "SAP Marketing Cloud"
+        service: "SAP Customer Data Platform"
       })
       .expect(200).end((err, response) => {
         console.log(response.body)
         lastSavedVersionId = response.body._id
         test.assert(response.body.permissions.Manager, "ViewCustomerData")
-        test.assert(response.body.service, "SAP Marketing Cloud")
+        test.assert(response.body.service, "SAP Customer Data Platform")
         done(err);
       });
   });
