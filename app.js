@@ -55,8 +55,9 @@ async function getObjectToAddToBundle(serviceName) {
   return objectToadd
 }
 
-let cache = {};
+
 var request = require('request');
+
 app.post('/query', async function (req, res) {
   let permissionsjson = {}
   permissionsjson.permissions = []
@@ -64,22 +65,31 @@ app.post('/query', async function (req, res) {
   permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Service Cloud'))
   permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Customer Data Platform'))
   //modify the url in any way you want
-  var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
-  if (!cache[JSON.stringify(permissionsjson)] || !cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)] || !cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)][JSON.stringify(req.headers)]) {
+
+
+  let cacheKeys = {
+    permissions : JSON.stringify(permissionsjson.permissions),
+    body        : JSON.stringify(req.body),
+    headers     : JSON.stringify(req.headers.Authorization),
+  };
+
+  let cache = await (await MongoService.getAllOrgInstance()).findAll("cache", cacheKeys)
+  
+  if (!cache.length) {
+    var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
     console.log("fetch")
     request.post({
       headers: req.headers,
       url: newurl,
       body: JSON.stringify(req.body)
-    }, function (error, response, body) {
-      cache[JSON.stringify(permissionsjson)] = {}
-      cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)] = {}
-      cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)][JSON.stringify(req.headers)] = body;
+    }, async function (error, response, body) {
+      cacheKeys.responseBody = body
+      await (await MongoService.getAllOrgInstance()).saveOne("cache", cacheKeys)
       res.send(body)
     })
   } else {
     console.log("from cache")
-    res.send(cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)][JSON.stringify(req.headers)])
+    res.send(cache.responseBody)
   }
 });
 
