@@ -74,8 +74,8 @@ app.post('/query', function (req, res) {
         res.send(cache[JSON.stringify(req.body)][JSON.stringify(req.headers)])
       }
     }
+    res.send(body)
   });
-  res.send(body)
 });
 
 app.get('/data/bundle', async function (req, res) {
