@@ -55,6 +55,13 @@ async function getObjectToAddToBundle(serviceName) {
   return objectToadd
 }
 
+var request = require('request');
+app.post('/query', function(req,res) {
+  //modify the url in any way you want
+  var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
+  request(newurl).pipe(res);
+});
+
 app.get('/data/bundle', async function (req, res) {
 
   let permissionsjson = {}
