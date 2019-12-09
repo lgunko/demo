@@ -57,25 +57,30 @@ async function getObjectToAddToBundle(serviceName) {
 
 let cache = {};
 var request = require('request');
-app.post('/query', function (req, res) {
+app.post('/query', async function (req, res) {
+  let permissionsjson = {}
+  permissionsjson.permissions = []
+
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Service Cloud'))
+  permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Customer Data Platform'))
   //modify the url in any way you want
   var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
-  request.post({
-    headers: req.headers,
-    url: newurl,
-    body: JSON.stringify(req.body)
-  }, function (error, response, body) {
-    if (!cache[JSON.stringify(req.body)]) {
-      cache[JSON.stringify(req.body)] = {}
-      cache[JSON.stringify(req.body)][JSON.stringify(req.headers)] = body;
+  if (!cache[JSON.stringify(permissionsjson)] || !cache[JSON.stringify(permissionsjson)][req.body] || !cache[JSON.stringify(permissionsjson)][req.body][req.headers]) {
+    console.log("fetch")
+    request.post({
+      headers: req.headers,
+      url: newurl,
+      body: JSON.stringify(req.body)
+    }, function (error, response, body) {
+      cache[JSON.stringify(permissionsjson)] = {}
+      cache[JSON.stringify(permissionsjson)][req.body] = {}
+      cache[JSON.stringify(permissionsjson)][req.body][req.headers] = body;
       res.send(body)
-    } else {
-      if (cache[JSON.stringify(req.body)][JSON.stringify(req.headers)]) {
-        res.send(cache[JSON.stringify(req.body)][JSON.stringify(req.headers)])
-      }
-    }
-    res.send(body)
-  });
+    })
+  } else {
+    console.log("from cache")
+    res.send(cache[JSON.stringify(permissionsjson)][req.body][req.headers])
+  }
 });
 
 app.get('/data/bundle', async function (req, res) {
