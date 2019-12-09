@@ -9,6 +9,16 @@ const request = supertest(app);
 var lastSavedVersionId = "";
 
 describe('Tests app', function () {
+
+  it('verifies delete cache', function (done) {
+    request.get('/deleteCache')
+      .expect(200).end((err, response) => {
+        test.assert(response.body, true)
+        done(err);
+      });
+  });
+
+
   it('verifies delete all versions', function (done) {
     request.get('/deleteAllVersions')
       .expect(200).end((err, response) => {
@@ -42,7 +52,7 @@ describe('Tests app', function () {
         done(err);
       });
   });
-//////////////////////////////////////////////////
+  //////////////////////////////////////////////////
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
@@ -59,7 +69,7 @@ describe('Tests app', function () {
         done(err);
       });
   });
-//////////////////////////////////////////////////
+  //////////////////////////////////////////////////
   it('verifies post version', function (done) {
     request.post('/newVersion')
       .send({
@@ -105,7 +115,7 @@ describe('Tests app', function () {
         done(err);
       });
   });
-//////////////////////////////////////////////////
+  //////////////////////////////////////////////////
   it('verifies get active versions', function (done) {
     request.get('/activeVersions')
       .expect(200).end((err, response) => {
@@ -127,7 +137,7 @@ describe('Tests app', function () {
         done(err);
       });
   });
-  
+
   it('verifies get timestamp', function (done) {
     request.get('/timestamp')
       .expect(200).end((err, response) => {
