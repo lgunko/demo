@@ -68,13 +68,13 @@ app.post('/query', async function (req, res) {
 
 
   let cacheKeys = {
-    permissions : JSON.stringify(permissionsjson.permissions),
-    body        : JSON.stringify(req.body),
-    headers     : JSON.stringify(req.headers.Authorization),
+    permissions: JSON.stringify(permissionsjson.permissions),
+    body: JSON.stringify(req.body),
+    headers: JSON.stringify(req.headers.Authorization),
   };
 
   let cache = await (await MongoService.getAllOrgInstance()).findAll("cache", cacheKeys)
-  
+
   if (!cache.length) {
     var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
     console.log("fetch")
@@ -142,6 +142,14 @@ app.get('/deleteAllActiveVersions', async function (req, res) {
   let allVersions = await (await MongoService.getAllOrgInstance()).findAll("activeVersion")
   allVersions.map(async version => {
     await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", version._id)
+  })
+  res.send(true)
+})
+
+app.get('/deleteCache', async function (req, res) {
+  let cacheAll = await (await MongoService.getAllOrgInstance()).findAll("cache")
+  cacheAll.map(async cacheOne => {
+    await (await MongoService.getAllOrgInstance()).deleteOne("cache", cacheOne._id)
   })
   res.send(true)
 })
@@ -216,6 +224,30 @@ app.get('/allGroups', function (req, res) {
     "Consultant",
   ]);
 
+})
+
+
+app.get('/permissionsForService', function (req, res) {
+
+  console.log(req.query.service)
+  let service = decodeURIComponent(req.query.service)
+  console.log(service)
+  switch (service) {
+    case "SAP Service Cloud":
+      res.send([
+        "ViewServiceOrdersAssignedToMe",
+        "ViewAllServiceOrders",
+        "CreateServiceOrder",
+        "ViewCustomerData"
+      ])
+    case "SAP Customer Data Platform":
+      res.send([
+        "ViewCustomerData",
+        "ViewCustomerContactData",
+      ])
+    default:
+      res.send([])
+  }
 })
 
 app.get('/groupsForService', function (req, res) {
