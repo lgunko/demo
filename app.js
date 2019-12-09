@@ -89,7 +89,7 @@ app.post('/query', async function (req, res) {
     })
   } else {
     console.log("from cache")
-    res.send(cache.responseBody)
+    res.send(cache[0].responseBody)
   }
 });
 
