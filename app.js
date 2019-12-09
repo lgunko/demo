@@ -59,7 +59,13 @@ var request = require('request');
 app.post('/query', function(req,res) {
   //modify the url in any way you want
   var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
-  request(newurl).pipe(res);
+  request.post({
+    headers: req.headers,
+    url:     newurl,
+    body:    JSON.stringify(req.body)
+  }, function(error, response, body){
+    res.send(body)
+  });
 });
 
 app.get('/data/bundle', async function (req, res) {
