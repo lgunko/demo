@@ -65,7 +65,7 @@ app.post('/query', async function (req, res) {
   permissionsjson.permissions.push(await getObjectToAddToBundle('SAP Customer Data Platform'))
   //modify the url in any way you want
   var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
-  if (!cache[JSON.stringify(permissionsjson)] || !cache[JSON.stringify(permissionsjson)][req.body] || !cache[JSON.stringify(permissionsjson)][req.body][req.headers]) {
+  if (!cache[JSON.stringify(permissionsjson)] || !cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)] || !cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)][JSON.stringify(req.headers)]) {
     console.log("fetch")
     request.post({
       headers: req.headers,
@@ -73,13 +73,13 @@ app.post('/query', async function (req, res) {
       body: JSON.stringify(req.body)
     }, function (error, response, body) {
       cache[JSON.stringify(permissionsjson)] = {}
-      cache[JSON.stringify(permissionsjson)][req.body] = {}
-      cache[JSON.stringify(permissionsjson)][req.body][req.headers] = body;
+      cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)] = {}
+      cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)][JSON.stringify(req.headers)] = body;
       res.send(body)
     })
   } else {
     console.log("from cache")
-    res.send(cache[JSON.stringify(permissionsjson)][req.body][req.headers])
+    res.send(cache[JSON.stringify(permissionsjson)][JSON.stringify(req.body)][JSON.stringify(req.headers)])
   }
 });
 
