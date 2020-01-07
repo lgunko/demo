@@ -18,6 +18,8 @@ const RedirectURL = "https://aa4tm323i6.execute-api.eu-central-1.amazonaws.com/P
 const ClientId = "T000003";
 const ClientSecret = "2913671Oks";
 
+const ObjectId = require('mongodb').ObjectID;
+
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
@@ -199,6 +201,12 @@ app.post('/newVersion', async function (req, res) {    //new version is always a
 })
 
 app.post('/activateOldVersion', async function (req, res) {
+  let newActiveVersionFull = await (await MongoService.getAllOrgInstance()).findOne("versions", new ObjectId(req.body.versionId))
+  console.log(newActiveVersionFull)
+  newActiveVersionFull.timestamp = new Date().getTime()
+  await (await MongoService.getAllOrgInstance()).deleteOne("versions", new ObjectId(req.body.versionId))
+  await (await MongoService.getAllOrgInstance()).saveOne("versions", newActiveVersionFull)
+
   await (await MongoService.getAllOrgInstance()).deleteOne("activeVersion", req.body.service)
   let newActiveVersion = { _id: req.body.service, versionId: req.body.versionId }
   await (await MongoService.getAllOrgInstance()).saveOne("activeVersion", newActiveVersion)
