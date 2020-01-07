@@ -76,7 +76,7 @@ app.post('/query', async function (req, res) {
   let cache = await (await MongoService.getAllOrgInstance()).findAll("cache", cacheKeys)
 
   if (!cache.length) {
-    var newurl = 'http://opaagent-1033655436.eu-central-1.elb.amazonaws.com/query';
+    var newurl = 'http://bundle-1168353036.eu-central-1.elb.amazonaws.com/query';
     console.log("fetch")
     request.post({
       headers: req.headers,
@@ -424,6 +424,44 @@ app.get('/callbackGetTokenByCodeSMC', async function (req, res) {
   }
 
 });
+
+
+app.get('/generateDataJson', async function (req, res) {
+
+  permissionsjson = {}
+  permissionsjson.permissions = {}
+  service = "test"
+  /*  for (let i = 0; i < 500; i++) {
+      let service = "service" + i;*/
+  permissionsjson.permissions[service] = {}
+  for (let g = 0; g < 300; g++) {
+    let group = "group" + g + new Date().getTime();
+    permissionsjson.permissions[service][group] = []
+    for (let p = 0; p < 150; p++) {
+      let permission = "permission" + p + new Date().getTime();
+      permissionsjson.permissions[service][group].push(permission)
+    }
+  }
+  //}
+  try {
+    fs.unlinkSync('/tmp/opa.tar.gz')
+  } catch (err) {
+    console.log(err)
+  }
+
+  fs.writeFileSync('/tmp/data.json', JSON.stringify(permissionsjson));
+  console.log('wrote data.json file')
+
+  await tar.c(
+    {
+      gzip: true,
+      file: '/tmp/opa.tar.gz'
+    },
+    ['/tmp/data.json', './opadatalocal/getPermissions.rego']
+  )
+  console.log("compressed")
+  res.download('/tmp/opa.tar.gz')
+})
 
 
 // Export your Express configuration so that it can be consumed by the Lambda handler
