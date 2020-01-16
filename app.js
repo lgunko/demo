@@ -78,7 +78,7 @@ app.post('/query', async function (req, res) {
   let cache = await (await MongoService.getAllOrgInstance()).findAll("cache", cacheKeys)
 
   if (!cache.length) {
-    var newurl = 'http://bundle-1168353036.eu-central-1.elb.amazonaws.com/query';
+    var newurl = 'http://demo-875809446.eu-central-1.elb.amazonaws.com/query';
     console.log("fetch")
     request.post({
       headers: req.headers,
